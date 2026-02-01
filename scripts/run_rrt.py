@@ -7,7 +7,7 @@ from src.rrt import rrt_plan
 
 
 def main():
-    seed = 2
+    seed = 4
     env = Environment2D(width = 10, height = 6, n_obs = 5, seed = seed)
 
     start = env.sample_free()
@@ -38,13 +38,18 @@ def main():
 
     # draw tree edges lightly
     for i in range(1, len(nodes)):
-        p = nodes[parent[i]]
+        pi = parent[i]
+        if pi is None:
+            continue
+        p = nodes[pi]
         q = nodes[i]
-        ax.plot([p[0], q[0]], [p[1], q[1]], linewidth = 0.6)
+        ax.plot([p[0], q[0]], [p[1], q[1]], color = "limegreen", alpha = 0.35, linewidth = 1.0)
+
 
     # start/goal markers
-    ax.scatter([start[0]], [start[1]], s = 60, marker = "s")
-    ax.scatter([goal[0]], [goal[1]], s = 80, marker = "*")
+    ax.scatter([start[0]], [start[1]], marker = "s", s = 80, color = "blue")
+    ax.scatter([goal[0]], [goal[1]], marker = "*", s = 120, color = "gold")
+
 
     path = res["path"]
     if path is None:
@@ -52,13 +57,14 @@ def main():
     else:
         xs = [p[0] for p in path]
         ys = [p[1] for p in path]
-        ax.plot(xs, ys, linewidth = 3)
+        ax.plot(xs, ys, color = "red", linewidth = 3)
         print(f"RRT found path length = {len(path)}")
         print(f"nodes expanded = {len(nodes)}, runtime = {dt * 1000:.1f} ms")
 
     os.makedirs("outputs/plots", exist_ok = True)
     outpath = f"outputs/plots/rrt_seed{seed}.png"
-    plt.savefig(outpath, dpi = 200)
+    plt.savefig(outpath, dpi = 200, bbox_inches = "tight")
+    plt.close()
     print(f"Saved plot to: {outpath}")
 
 

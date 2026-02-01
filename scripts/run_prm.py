@@ -33,22 +33,23 @@ def main():
             if j < i:
                 continue
             xj, yj = nodes[j]
-            ax.plot([xi, xj], [yi, yj], linewidth = 0.6, alpha = 0.4)
+            ax.plot([xi, xj], [yi, yj], color = "limegreen", alpha = 0.25, linewidth = 0.8)
 
     # draw nodes
     xs = [p[0] for p in nodes]
     ys = [p[1] for p in nodes]
-    ax.scatter(xs, ys, s=8)
+    ax.scatter(xs, ys, s = 12, color = "green")
 
     # draw start/goal
-    ax.scatter([start[0]], [start[1]], s = 80, marker = "s")  # start square
-    ax.scatter([goal[0]], [goal[1]], s = 100, marker = "*")  # goal star
+    ax.scatter([start[0]], [start[1]], marker = "s", s = 80, color = "blue")
+    ax.scatter([goal[0]], [goal[1]], marker = "*", s = 120, color = "gold")
+
 
     # draw path if found
     if res.path is not None:
         px = [p[0] for p in res.path]
         py = [p[1] for p in res.path]
-        ax.plot(px, py, linewidth=2.5)
+        ax.plot(px, py, color = "red", linewidth = 3)
         print(f"PRM found path length = {res.path_length:.3f}")
     else:
         print("PRM did not find a path.")
@@ -58,10 +59,12 @@ def main():
     edge_count = sum(len(v) for v in res.edges.values()) // 2
     print(f"nodes = {len(res.nodes)}, edges = {edge_count}, runtime = {dt * 1000:.1f} ms")
 
-    os.makedirs("outputs/plots", exist_ok=True)
+    os.makedirs("outputs/plots", exist_ok = True)
     out = f"outputs/plots/prm_seed{seed}.png"
-    plt.savefig(out, dpi = 200)
+    plt.savefig(out, dpi = 200, bbox_inches = "tight")
+    plt.close()
     print(f"Saved plot to: {out}")
+
 
 
 if __name__ == "__main__":

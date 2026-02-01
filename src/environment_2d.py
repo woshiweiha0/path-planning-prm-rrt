@@ -10,6 +10,7 @@ Provides:
 from __future__ import annotations
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 from src.collision import point_in_triangle
 
 
@@ -78,20 +79,26 @@ class Environment2D:
                 return (x, y)
         return None
 
-    def plot(self, ax=None):
+    def plot(self, ax = None):
         if ax is None:
             fig, ax = plt.subplots()
 
         # draw border
         ax.set_xlim(0, self.width)
         ax.set_ylim(0, self.height)
-        ax.set_aspect("equal", adjustable="box")
+        ax.set_aspect("equal", adjustable = "box")
 
-        # draw triangles
+        # draw triangles as filled polygons
         for (a, b, c) in self.obstacles:
-            xs = [a[0], b[0], c[0], a[0]]
-            ys = [a[1], b[1], c[1], a[1]]
-            ax.plot(xs, ys)
+            triangle_pts = [a, b, c]
+            poly = Polygon(
+                triangle_pts,
+                closed = True,
+                facecolor = "black",
+                edgecolor = "black",
+                alpha = 0.6,
+            )
+            ax.add_patch(poly)
 
         ax.set_xlabel("x")
         ax.set_ylabel("y")
