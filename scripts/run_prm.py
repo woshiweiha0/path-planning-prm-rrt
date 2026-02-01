@@ -48,22 +48,28 @@ def main():
 
     # draw path if found
     if res.path is not None:
-        # 1) post-process
         raw_path = res.path
-        short_path = shortcut_path(env, raw_path, maxrep=800, segment_step=0.05, seed=seed)
-
         raw_len = path_length(raw_path)
+
+        # post-process
+        short_path = shortcut_path(env, raw_path, maxrep = 800, segment_step = 0.05, seed = seed)
         short_len = path_length(short_path)
 
-        # 2) plot final (shortcutted) path thick red
-        px = [p[0] for p in short_path]
-        py = [p[1] for p in short_path]
-        ax.plot(px, py, color="red", linewidth=3)
+        # 1) plot original PRM path (thin red)
+        rx = [p[0] for p in raw_path]
+        ry = [p[1] for p in raw_path]
+        ax.plot(rx, ry, color = "red", linewidth = 2, alpha = 0.5)
+
+        # 2) plot shortcut path (thick red)
+        sx = [p[0] for p in short_path]
+        sy = [p[1] for p in short_path]
+        ax.plot(sx, sy, color = "red", linewidth = 3.5, alpha = 1.0)
 
         print(f"PRM raw path length       = {raw_len:.3f}")
         print(f"PRM shortcut path length  = {short_len:.3f}")
     else:
         print("PRM did not find a path.")
+
 
 
     # stats
@@ -72,11 +78,10 @@ def main():
     print(f"nodes = {len(res.nodes)}, edges = {edge_count}, runtime = {dt * 1000:.1f} ms")
 
     os.makedirs("outputs/plots", exist_ok = True)
-    out = f"outputs/plots/prm_seed{seed}.png"
+    out = f"outputs/plots/prm_seed{seed}_shortcut.png"
     plt.savefig(out, dpi = 200, bbox_inches = "tight")
     plt.close()
     print(f"Saved plot to: {out}")
-
 
 
 if __name__ == "__main__":
